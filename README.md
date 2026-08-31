@@ -10,7 +10,21 @@ The central analytical question is:
 
 > Based on the historical trend, when could the global biodiversity index reach 0.50?
 
-The original project analysis estimated a crossing point around **2132–2133**.
+## Key Results
+
+The original project analysis estimated that the modeled global biodiversity index could reach approximately **0.50 around 2132–2133** if the historical dynamics represented by the model continued.
+
+The original notebook reported an out-of-sample ARIMA RMSE of approximately **0.001** for the selected configuration. The project also produced country-level estimates for 2100 using a separate linear-regression approach, providing a second perspective alongside the global time-series forecast.
+
+These are long-horizon statistical projections rather than deterministic predictions. Policy interventions, changes in measurement, structural environmental shifts and unforeseen events could materially change the trajectory.
+
+## Visual Analysis
+
+The project includes an interactive Tableau dashboard that brings together the biodiversity analysis and broader environmental context. It is the quickest way to explore the visual side of the project:
+
+[View the interactive Tableau dashboard](https://public.tableau.com/app/profile/giacomo.rossini/viz/PROJECT2_17025013200780/FINAL_dashboard?publish=yes)
+
+The generated forecast data is also available in `data/ARIMA_forecast_world.xlsx`, while `data/bounded_predictions_2100.xlsx` contains the country-level 2100 estimates. These outputs make it possible to build additional charts or dashboards without rerunning the full exploratory notebook.
 
 ## Portable Analysis
 
@@ -40,8 +54,6 @@ The project:
 4. fits the selected ARIMA model and extends the forecast to 2200;
 5. compares the time-series forecast with country-level linear-regression estimates for 2100.
 
-The original notebook reported an ARIMA RMSE of approximately **0.001** for the selected configuration.
-
 ## Data
 
 Project datasets are stored in `data/`. Key files include:
@@ -66,18 +78,6 @@ The analysis uses environmental and biodiversity datasets from sources including
 - GBIF
 - European biodiversity data sources
 
-## Key Result
-
-The project forecast suggests that the biodiversity index could reach approximately **0.50 around 2132–2133** if the historical time-series dynamics represented by the model continued.
-
-This is a long-horizon statistical projection, not a deterministic prediction. Policy interventions, measurement changes, structural environmental shifts and unforeseen events could materially change the trajectory.
-
-## Visualization
-
-The project also includes an interactive Tableau dashboard presenting the analysis and environmental context.
-
-[View the Tableau dashboard](https://public.tableau.com/app/profile/giacomo.rossini/viz/PROJECT2_17025013200780/FINAL_dashboard?publish=yes)
-
 ## Skills Demonstrated
 
 - time-series forecasting with ARIMA
@@ -88,3 +88,7 @@ The project also includes an interactive Tableau dashboard presenting the analys
 - comparison of forecasting approaches
 - reproducible file handling with `pathlib`
 - data visualization with Tableau
+
+## Limitations and Next Improvements
+
+The forecast extrapolates historical statistical patterns far into the future, so uncertainty increases substantially with the forecast horizon. A stronger next version would add explicit prediction intervals to the published visuals, document the source/version of every dataset, restore or replace the missing Red List input, and export a static forecast chart into the repository so the headline result is visible directly on GitHub as well as in Tableau.
