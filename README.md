@@ -1,65 +1,94 @@
-# Project_Biodiversity_forecast_ARIMA: studying factors that affect the trend
+# Biodiversity Forecasting with ARIMA
 
-## Summary
-By definition Biodiversity is the variety of plant and animal life in the world or in a particular habitat, a high level of which is usually considered to be important and desirable.
-This project aims to understand some macro-environmental factors that impacted the biodiversity and predict in which year the index will reach the critical value of 50%. 
+A time-series analysis project exploring global biodiversity trends and forecasting when the biodiversity index could reach a critical level of **0.50**.
 
-To do so, we are going to analyse various datasets related to environment. It is important to highlight that many factors have contributed in the past to impact the level of biodiversity, some of this factors are directly caused by Human behaviour and other are uncontrollable. 
-The primary objective is to gain insights into trends, patterns, and contributions of what impact this index and collect data regading territory, global temperature, macro-analysis of resources used that cannot explain the overall situation but are highly correlated with the topic and are extremely close to justify some trend. Said so, countless factors have contributed to reach this point.  
+## Project Goal
+
+Biodiversity is influenced by a complex combination of environmental pressures and human activity. This project combines biodiversity data with broader environmental indicators to explore long-term trends and build a forecast using an **ARIMA time-series model**.
+
+The central analytical question is:
+
+> Based on the historical trend, when could the global biodiversity index reach 0.50?
+
+The ARIMA analysis produced an estimated crossing point between **2132 and 2133**.
+
+## Analysis
+
+The project investigates biodiversity alongside environmental indicators including:
+
+- global temperature change
+- CO2 emissions
+- land and forest use
+- resource consumption
+- wildlife population trends
+
+These variables provide environmental context around the biodiversity trend. They should be interpreted as related indicators rather than proof of direct causation.
+
+## Forecasting Approach
+
+### 1. Data preparation
+
+Historical biodiversity data were cleaned and aggregated to create a usable time series. Country-level information was transformed where necessary and an average index was derived from available upper and lower values.
+
+### 2. Train/test evaluation
+
+The time series was split into training and testing data so that candidate ARIMA configurations could be evaluated out of sample.
+
+### 3. ARIMA parameter selection
+
+Different combinations of `p`, `d`, and `q` were evaluated, using RMSE to compare forecasting error. The selected configuration achieved an RMSE of approximately **0.001** in the project analysis.
+
+### 4. Model diagnostics
+
+Predicted and observed values were compared visually, and residual behaviour was inspected to assess model fit and the distribution of errors.
+
+### 5. Long-term forecast
+
+The fitted ARIMA model was extended from 2022 onward to estimate when the biodiversity index could reach 0.50.
+
+### 6. Alternative model
+
+A linear-regression forecast was also used as a comparison. For the year 2100, this approach produced a biodiversity index of approximately **0.44**, compared with approximately **0.54** from the ARIMA analysis, illustrating how strongly long-range results depend on modelling assumptions.
 
 ## Data Sources
- 
-In order to choose the right metrics to take into consideration, I before studied the world trend regading environment and i found out that global warming, territory usage and shift plus resources exploitation with CO2 prodution are consuming not just the wolrd but it's also taking out territory of wild animal.
 
-The main datasets have been extracted from ourworldindata.org | gbif.org | biodiversity.europa.eu
+The analysis uses environmental and biodiversity datasets from:
 
-## List of main files
+- Our World in Data
+- GBIF
+- European biodiversity data sources
 
-1. **ARIMA prediction (`ARIMA_forecast_world.xlsx`):**
-   - Dataset that joins the real index biodiversty data for the period 2001 to 2021 and plots the prediction obtained in our analysis from 2022 to 2200.
+## Key Files
 
-2. **Analysis of the world territory (`LAND_USED.xlsx`):**
-   - Dataset reports the analysis of the area for each country of the world from the period 2010 to 2021 by distinguish if it is 'LAND AREA', 'FOREST' etc. in square kilometers.
+| File | Purpose |
+| --- | --- |
+| `ARIMA_forecast_world.xlsx` | Historical biodiversity series and ARIMA forecast |
+| `LAND_USED.xlsx` | Country-level land and forest-area analysis |
+| `aggregate_exstintion_measure.xlsx` | Biodiversity index data |
+| `avg_cou_biod_2021_RLI.xlsx` | Processed average biodiversity index |
+| `annual_temp_and-co2-emissions-per-country.xlsx` | Temperature and CO2 data |
+| `bounded_predictions_2100.xlsx` | Alternative linear-regression forecast |
+| `eart_consumption_country.xlsx` | Country-level resource-consumption indicator |
+| `global-living-planet-index.xlsx` | Wildlife population trend data |
 
-3. **Biodiversity index (`aggregate_exstintion_measure.xlsx`):**
-   - Dataset plotting the index of biodiversity for each country, For the analysis has been used the wolrld index.
-   **Biodiversity index_average (`Biodiversity index (`avg_cou_biod_2021_RLI.xlsx`):**
-   - output of te analysis where is take into account the avarage from the upper and lower index value
+## Key Result
 
-4. **global temperature datase (`annual_temp_and-co2-emissions-per-country.xlsx`):**
-   - Data report the temperature variation from 1970 until 2022 per country.
+The ARIMA forecast estimates that the biodiversity index could reach the critical value of **0.50 around 2132–2133** if the historical time-series dynamics represented in the model were to continue.
 
-5. **alternative prediction (`bounded_predictions_2100.xlsx`):**
-   - Dataset reporting the result from a linear regression made from the main biodiversity index data.
-   
-6. **Quantity of earth consumed (`eart_consumption_country.xlsx`):**
-   - This databased report the number of earth intended as resources provider, each country need to mantain its economy as it is
-  
-7. **Measure the wildlife population (`global-living-planet-index.xlsx`):**
-   - This databased measures the average decline in monitored wildlife populations. The index value measures the change in abundance in 31,821 populations across 5,230 species relative       to the year 1970
-     
-## Data analysis steps:
+This is a long-horizon statistical projection rather than a deterministic prediction. Structural environmental changes, policy interventions, measurement changes and unexpected events could substantially alter the future trajectory.
 
-## Data Cleaning and Exploration
-- understand the data and trying to make it usable for the analysis - applyed the mean to get the avarage of the index and pivotting to get country and year in column
+## Visualization
 
-## prepare ARIMA - maximization 
-- I prepared the split between train and test data to perform control over the result and I evaluate the error using RMSE
-- Second, evaluate the model by maximizing the p_values, d_values, q_values with leat error resulting an RMSE of 0.001
+The project also includes an interactive Tableau dashboard presenting the analysis and environmental context.
 
-## Comparing result with data
-- plot the result to see the trend of my prediction and my datas - the two lines were practically equal confirming the prediction was reliable
-- studying the residual to check if my datas were well fitted as well as see if the density respected the pattern of a normal distribution around 0 of mean
+[View the Tableau dashboard](https://public.tableau.com/app/profile/giacomo.rossini/viz/PROJECT2_17025013200780/FINAL_dashboard?publish=yes)
 
-## applying ARIMA 
-- applyng the model from the start year of 2022 and checking in which year we reached the 0.5
+## Skills Demonstrated
 
-## alternative analysis with Linear Regression
-- the Linear regression has been applied for each country forecasting a sample year of 2100 choosen arbitrarly - as a resilt of this, this analysis was more agression and showed the final output of index = 0.44 against the 0.54 of the Arima analysis
-
-
-## CONCLUSION
-This analysis was mainly focused to give a general view of the causes that impact our biodiversity and trying to raise people awarness. The main goal was to predict using ARIMA method when the biodiversity index would hit the 0.5 and was forcast in between the year 2132 & 2133.
-
-# This project has a visualization on Tableau Public on the following link:
- https://public.tableau.com/app/profile/giacomo.rossini/viz/PROJECT2_17025013200780/FINAL_dashboard?publish=yes
+- time-series forecasting with ARIMA
+- model selection and RMSE evaluation
+- residual diagnostics
+- data cleaning and aggregation
+- environmental-data analysis
+- comparison of forecasting approaches
+- data visualization with Tableau
