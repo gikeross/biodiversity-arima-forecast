@@ -10,72 +10,67 @@ The central analytical question is:
 
 > Based on the historical trend, when could the global biodiversity index reach 0.50?
 
-The ARIMA analysis produced an estimated crossing point between **2132 and 2133**.
+The original project analysis estimated a crossing point around **2132–2133**.
 
-## Analysis
+## Portable Analysis
 
-The project investigates biodiversity alongside environmental indicators including:
+`analysis.py` is the recommended entry point for running the core forecasting workflow. It replaces the original machine-specific `/Users/...` paths with repository-relative paths under `data/` and writes generated forecast files back into that folder.
 
-- global temperature change
-- CO2 emissions
-- land and forest use
-- resource consumption
-- wildlife population trends
+Install the dependencies:
 
-These variables provide environmental context around the biodiversity trend. They should be interpreted as related indicators rather than proof of direct causation.
+```bash
+pip install -r requirements.txt
+```
+
+Then run:
+
+```bash
+python analysis.py
+```
+
+The historical Jupyter notebook, `prev_biodivers.ipynb`, is kept as the original exploratory analysis and presentation of the work.
 
 ## Forecasting Approach
 
-### 1. Data preparation
+The project:
 
-Historical biodiversity data were cleaned and aggregated to create a usable time series. Country-level information was transformed where necessary and an average index was derived from available upper and lower values.
+1. cleans and aggregates historical biodiversity data;
+2. creates a global biodiversity time series;
+3. evaluates candidate ARIMA `(p, d, q)` configurations using out-of-sample RMSE;
+4. fits the selected ARIMA model and extends the forecast to 2200;
+5. compares the time-series forecast with country-level linear-regression estimates for 2100.
 
-### 2. Train/test evaluation
+The original notebook reported an ARIMA RMSE of approximately **0.001** for the selected configuration.
 
-The time series was split into training and testing data so that candidate ARIMA configurations could be evaluated out of sample.
+## Data
 
-### 3. ARIMA parameter selection
+Project datasets are stored in `data/`. Key files include:
 
-Different combinations of `p`, `d`, and `q` were evaluated, using RMSE to compare forecasting error. The selected configuration achieved an RMSE of approximately **0.001** in the project analysis.
+| File | Purpose |
+| --- | --- |
+| `data/aggregate_exstintion_measure.xlsx` | Main biodiversity index input |
+| `data/ARIMA_forecast_world.xlsx` | Generated global ARIMA forecast |
+| `data/bounded_predictions_2100.xlsx` | Country-level linear-regression forecast |
+| `data/LAND_USED.xlsx` | Land and forest-use analysis |
+| `data/annual_temp_and-co2-emissions-per-country.xlsx` | Temperature and CO2 data |
+| `data/global-living-planet-index.xlsx` | Wildlife population trend data |
+| `data/eart_consumption_country.xlsx` | Resource-consumption indicator |
 
-### 4. Model diagnostics
-
-Predicted and observed values were compared visually, and residual behaviour was inspected to assess model fit and the distribution of errors.
-
-### 5. Long-term forecast
-
-The fitted ARIMA model was extended from 2022 onward to estimate when the biodiversity index could reach 0.50.
-
-### 6. Alternative model
-
-A linear-regression forecast was also used as a comparison. For the year 2100, this approach produced a biodiversity index of approximately **0.44**, compared with approximately **0.54** from the ARIMA analysis, illustrating how strongly long-range results depend on modelling assumptions.
+The historical notebook also references `red-list-index.xlsx`. That source file is **not currently included in the repository**, so the related optional merge step is not part of the portable `analysis.py` workflow.
 
 ## Data Sources
 
-The analysis uses environmental and biodiversity datasets from:
+The analysis uses environmental and biodiversity datasets from sources including:
 
 - Our World in Data
 - GBIF
 - European biodiversity data sources
 
-## Key Files
-
-| File | Purpose |
-| --- | --- |
-| `ARIMA_forecast_world.xlsx` | Historical biodiversity series and ARIMA forecast |
-| `LAND_USED.xlsx` | Country-level land and forest-area analysis |
-| `aggregate_exstintion_measure.xlsx` | Biodiversity index data |
-| `avg_cou_biod_2021_RLI.xlsx` | Processed average biodiversity index |
-| `annual_temp_and-co2-emissions-per-country.xlsx` | Temperature and CO2 data |
-| `bounded_predictions_2100.xlsx` | Alternative linear-regression forecast |
-| `eart_consumption_country.xlsx` | Country-level resource-consumption indicator |
-| `global-living-planet-index.xlsx` | Wildlife population trend data |
-
 ## Key Result
 
-The ARIMA forecast estimates that the biodiversity index could reach the critical value of **0.50 around 2132–2133** if the historical time-series dynamics represented in the model were to continue.
+The project forecast suggests that the biodiversity index could reach approximately **0.50 around 2132–2133** if the historical time-series dynamics represented by the model continued.
 
-This is a long-horizon statistical projection rather than a deterministic prediction. Structural environmental changes, policy interventions, measurement changes and unexpected events could substantially alter the future trajectory.
+This is a long-horizon statistical projection, not a deterministic prediction. Policy interventions, measurement changes, structural environmental shifts and unforeseen events could materially change the trajectory.
 
 ## Visualization
 
@@ -91,4 +86,5 @@ The project also includes an interactive Tableau dashboard presenting the analys
 - data cleaning and aggregation
 - environmental-data analysis
 - comparison of forecasting approaches
+- reproducible file handling with `pathlib`
 - data visualization with Tableau
