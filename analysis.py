@@ -1,14 +1,18 @@
 from pathlib import Path
 from math import sqrt
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from statsmodels.tsa.arima.model import ARIMA
 
-DATA_DIR = Path(__file__).resolve().parent / "data"
+ROOT_DIR = Path(__file__).resolve().parent
+DATA_DIR = ROOT_DIR / "data"
+ASSETS_DIR = ROOT_DIR / "assets"
 BIODIVERSITY_FILE = DATA_DIR / "aggregate_exstintion_measure.xlsx"
+FORECAST_CHART = ASSETS_DIR / "biodiversity-arima-forecast.png"
 
 
 def load_biodiversity_data() -> pd.DataFrame:
@@ -105,6 +109,42 @@ def forecast_countries_2100(pivot: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def save_forecast_chart(series: pd.Series, forecast: pd.DataFrame) -> None:
+    """Save a recruiter-friendly static chart from the historical and forecast data."""
+    ASSETS_DIR.mkdir(exist_ok=True)
+
+    fig, ax = plt.subplots(figsize=(11, 6))
+    ax.plot(series.index.year, series.values, linewidth=2, label="Historical biodiversity index")
+    ax.plot(
+        forecast["Year"].dt.year,
+        forecast["Prediction"],
+        linewidth=2,
+        label="ARIMA forecast",
+    )
+    ax.axhline(0.50, linestyle="--", linewidth=1.5, label="0.50 threshold")
+
+    crossing = forecast[forecast["Prediction"] <= 0.50].head(1)
+    if not crossing.empty:
+        year = int(crossing.iloc[0]["Year"].year)
+        value = float(crossing.iloc[0]["Prediction"])
+        ax.scatter([year], [value], zorder=3)
+        ax.annotate(
+            f"Threshold reached: {year}",
+            xy=(year, value),
+            xytext=(year - 45, value + 0.08),
+            arrowprops={"arrowstyle": "->"},
+        )
+
+    ax.set_title("Global Biodiversity Index: Historical Trend and ARIMA Forecast")
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Biodiversity index")
+    ax.grid(alpha=0.25)
+    ax.legend()
+    fig.tight_layout()
+    fig.savefig(FORECAST_CHART, dpi=180, bbox_inches="tight")
+    plt.close(fig)
+
+
 def main() -> None:
     biodiv = load_biodiversity_data()
     pivot, world_series = prepare_world_series(biodiv)
@@ -117,12 +157,15 @@ def main() -> None:
 
     world_forecast.to_excel(DATA_DIR / "ARIMA_forecast_world.xlsx", index=False)
     country_forecast.to_excel(DATA_DIR / "bounded_predictions_2100.xlsx", index=False)
+    save_forecast_chart(world_series, world_forecast)
 
     crossing = world_forecast[world_forecast["Prediction"] <= 0.50].head(1)
     if not crossing.empty:
         year = crossing.iloc[0]["Year"].year
         value = crossing.iloc[0]["Prediction"]
         print(f"Forecast first reaches 0.50 or below in {year} ({value:.4f}).")
+
+    print(f"Saved forecast chart to {FORECAST_CHART.relative_to(ROOT_DIR)}")
 
 
 if __name__ == "__main__":
