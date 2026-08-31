@@ -1,20 +1,21 @@
-name: Generate forecast chart
+name: Run biodiversity analysis
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - "generate_chart.py"
+      - "analysis.py"
+      - "requirements.txt"
       - "data/aggregate_exstintion_measure.xlsx"
-      - "data/ARIMA_forecast_world.xlsx"
       - ".github/workflows/generate-forecast-chart.yml"
 
 permissions:
   contents: write
 
 jobs:
-  build-chart:
+  analyse:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
@@ -24,17 +25,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
-      - name: Install chart dependencies
-        run: pip install pandas matplotlib openpyxl
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-      - name: Generate forecast chart
-        run: python generate_chart.py
+      - name: Run full forecasting analysis
+        run: python analysis.py
 
-      - name: Commit generated chart
+      - name: Commit generated outputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/biodiversity-arima-forecast.png
-          git diff --cached --quiet || git commit -m "Update generated biodiversity forecast chart"
+          git add \
+            assets/biodiversity-arima-forecast.png \
+            data/ARIMA_forecast_world.xlsx \
+            data/bounded_predictions_2100.xlsx \
+            results/model_results.csv
+          git diff --cached --quiet || git commit -m "Refresh biodiversity forecast outputs"
           git push
