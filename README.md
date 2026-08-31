@@ -2,6 +2,12 @@
 
 A time-series analysis project exploring global biodiversity trends and forecasting when the biodiversity index could reach a critical level of **0.50**.
 
+## Forecast at a Glance
+
+![Global biodiversity historical trend and ARIMA forecast](assets/biodiversity-arima-forecast.png)
+
+The chart combines the historical world biodiversity index with the repository's ARIMA forecast and marks the **0.50 threshold** directly on the projection.
+
 ## Project Goal
 
 Biodiversity is influenced by a complex combination of environmental pressures and human activity. This project combines biodiversity data with broader environmental indicators to explore long-term trends and build a forecast using an **ARIMA time-series model**.
@@ -20,15 +26,17 @@ These are long-horizon statistical projections rather than deterministic predict
 
 ## Visual Analysis
 
-The project includes an interactive Tableau dashboard that brings together the biodiversity analysis and broader environmental context. It is the quickest way to explore the visual side of the project:
+The project includes an interactive Tableau dashboard that brings together the biodiversity analysis and broader environmental context:
 
 [View the interactive Tableau dashboard](https://public.tableau.com/app/profile/giacomo.rossini/viz/PROJECT2_17025013200780/FINAL_dashboard?publish=yes)
 
-The generated forecast data is also available in `data/ARIMA_forecast_world.xlsx`, while `data/bounded_predictions_2100.xlsx` contains the country-level 2100 estimates. These outputs make it possible to build additional charts or dashboards without rerunning the full exploratory notebook.
+The generated forecast data is available in `data/ARIMA_forecast_world.xlsx`, while `data/bounded_predictions_2100.xlsx` contains the country-level 2100 estimates.
 
 ## Portable Analysis
 
-`analysis.py` is the recommended entry point for running the core forecasting workflow. It replaces the original machine-specific `/Users/...` paths with repository-relative paths under `data/` and writes generated forecast files back into that folder.
+`analysis.py` is the recommended entry point for running the full forecasting workflow. It replaces the original machine-specific `/Users/...` paths with repository-relative paths under `data/`, regenerates forecast outputs and creates the static forecast chart.
+
+For a fast chart-only refresh from the existing forecast output, run `generate_chart.py`.
 
 Install the dependencies:
 
@@ -36,11 +44,19 @@ Install the dependencies:
 pip install -r requirements.txt
 ```
 
-Then run:
+Then run the full analysis:
 
 ```bash
 python analysis.py
 ```
+
+Or regenerate only the chart:
+
+```bash
+python generate_chart.py
+```
+
+The repository also includes a GitHub Actions workflow that regenerates the static chart when the chart script or key forecast data changes.
 
 The historical Jupyter notebook, `prev_biodivers.ipynb`, is kept as the original exploratory analysis and presentation of the work.
 
@@ -87,8 +103,8 @@ The analysis uses environmental and biodiversity datasets from sources including
 - environmental-data analysis
 - comparison of forecasting approaches
 - reproducible file handling with `pathlib`
-- data visualization with Tableau
+- data visualization with Tableau and matplotlib
 
 ## Limitations and Next Improvements
 
-The forecast extrapolates historical statistical patterns far into the future, so uncertainty increases substantially with the forecast horizon. A stronger next version would add explicit prediction intervals to the published visuals, document the source/version of every dataset, restore or replace the missing Red List input, and export a static forecast chart into the repository so the headline result is visible directly on GitHub as well as in Tableau.
+The forecast extrapolates historical statistical patterns far into the future, so uncertainty increases substantially with the forecast horizon. A stronger next version would add explicit prediction intervals to the published visuals, document the source/version of every dataset, and restore or replace the missing Red List input.
