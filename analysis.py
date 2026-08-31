@@ -1,3 +1,5 @@
+"""Portable biodiversity forecasting workflow and chart generator."""
+
 from pathlib import Path
 from math import sqrt
 
